@@ -34,12 +34,14 @@ let rec findVar name = function
 
 let rec tp_expr env = function
     Const(_,n) -> (match n with
-                        (BoolV b) -> Const(BoolT b,BoolV b)
-                        |(IntV i) -> Const(IntT i,IntV i)
+                        (BoolV b) -> Const(BoolT,BoolV b)
+                        |(IntV i) -> Const(IntT,IntV i)
                         |(VoidV) -> Const(VoidT,VoidV))
     |VarE(_,Var(bind,name)) -> (try VarE(findVar name env.localvar,Var(bind,name)) with
                                                         PasDeVariable -> raise MauvaisTypage)
-    |BinOp(_,opBin,exp1,exp2) -> if tp_expr env exp1 = tp_expr env exp2 && tp_expr env exp1 =
+    |BinOp(_,opBin,exp1,exp2) -> if ((tp_of_expr (tp_expr env exp1)) =
+                                    (tp_of_expr (tp_expr env exp2)))
+                                    && (tp_of_expr (tp_expr env exp1) = BoolT
 
       | BCompar of bcompar
       | BLogic of blogic)
