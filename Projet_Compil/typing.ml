@@ -1,8 +1,60 @@
 (* Typechecking of source programs *)
 
-open Lang
 open Analyses
 
+
+
+
+
+
+
+
+
+
+
+
+(* Definition of source language data structures *)
+
+(* variable names *)
+type vname = string;;
+
+(* function names *)
+type fname = string;;
+
+type binding = Local | Global;;
+
+(* binary arithmetic operators *)
+type barith = BAadd | BAsub | BAmul | BAdiv | BAmod;;
+
+(* binary logic operators *)
+type blogic = BLand | BLor;;
+
+(* binary comparison operators *)
+type bcompar = BCeq | BCge | BCgt | BCle | BClt | BCne;;
+
+(* binary operators, combining all of the above *)
+type binop =
+    BArith of barith
+  | BCompar of bcompar
+  | BLogic of blogic;;
+
+type value =
+    BoolV of bool
+  | IntV of int
+  | VoidV;;
+
+type var = Var of binding * vname;;
+
+(* expresssions.
+   The type parameter 'a is instantiated during type inference *)
+type 'a expr =
+    Const of 'a * value                        (* constant *)
+  | VarE of 'a * var                (* variable *)
+  | BinOp of 'a * binop * ('a expr) * ('a expr)   (* binary operation *)
+  | IfThenElse of 'a * ('a expr) * ('a expr) * ('a expr) (* if - then - else *)
+  | CallE of 'a * fname * ('a expr list);;
+
+(* auxiliary function; extracts the type component of an expression *)
 let tp_of_expr = function
     Const (t, _) -> t
   | VarE (t, _) -> t
@@ -10,31 +62,63 @@ let tp_of_expr = function
   | IfThenElse (t, _, _, _) -> t
   | CallE (t, _, _) -> t;;
 
-  type 'a stmt =
-      Skip
-    | Assign of 'a * var * ('a expr)
-    | Seq of ('a stmt) * ('a stmt)
-    | Cond of ('a expr) * ('a stmt) * ('a stmt)
-    | While of ('a expr) * ('a stmt)
-    | CallC of fname * ('a expr list)
-    | Return of ('a expr);;
+(* expresssions.
+   The type parameter 'a is as for expresssions *)
+type 'a stmt =
+    Skip
+  | Assign of 'a * var * ('a expr)
+  | Seq of ('a stmt) * ('a stmt)
+  | Cond of ('a expr) * ('a stmt) * ('a stmt)
+  | While of ('a expr) * ('a stmt)
+  | CallC of fname * ('a expr list)
+  | Return of ('a expr);;
 
-  type vardecl =
-      Vardecl of tp * vname;;
 
-  let tp_of_vardecl (Vardecl (t, _)) = t;;
+(* Types *)
+type tp = BoolT | IntT | VoidT;;
 
-  let name_of_vardecl (Vardecl (_, vn)) = vn;;
+let numeric_tp = function
+    IntT -> true
+  | t -> false;;
 
-  (* function declaration: return type; parameter declarations *)
-  type fundecl =
-      Fundecl of tp * fname * (vardecl list);;
+(* variable / parameter declaration *)
+type vardecl =
+    Vardecl of tp * vname;;
 
-  let params_of_fundecl (Fundecl (t, fn, pds)) = pds;;
+let tp_of_vardecl (Vardecl (t, _)) = t;;
 
-  (* function definition: function declaration; local var decls; function body *)
-  type 'a fundefn =
-      Fundefn of fundecl * (vardecl list) * ('a stmt);;
+let name_of_vardecl (Vardecl (_, vn)) = vn;;
+
+(* function declaration: return type; parameter declarations *)
+type fundecl =
+    Fundecl of tp * fname * (vardecl list);;
+
+let params_of_fundecl (Fundecl (t, fn, pds)) = pds;;
+
+(* function definition: function declaration; local var decls; function body *)
+type 'a fundefn =
+    Fundefn of fundecl * (vardecl list) * ('a stmt);;
+
+(* program: global variable declarations; function definitions *)
+type 'a prog =
+    Prog of (vardecl list) * ('a fundefn list);;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 (* Environments *)
 
@@ -42,7 +126,7 @@ type environment =
     {localvar: (vname * tp) list;
      globalvar: (vname * tp) list;
      returntp: tp;
-     funbind: (fundecl list)};;
+     funbind: fundecl list};;
 
 
 (* TODO: put your definitions here *)
@@ -59,6 +143,7 @@ let tp_prog (Prog (gvds, fdfs)) =
 exception PasDeVariable;;
 
 exception MauvaisTypage;;
+
 
 let rec findTypeOfVar name = function
     ((s,t)::l) -> if s = name then t else findTypeOfVar name l
@@ -105,16 +190,17 @@ let rec findVar name = function
     |[] -> false;;
 
 let rec findVarFoncAux env = function
-    (((tpVar : tp),varName)::varL) -> ((findVar varName env.localvar) && (findVarFoncAux env varL));;
+    (Vardecl (tpVar,varName)::varL) -> ((findVar varName env.localvar) && (findVarFoncAux env varL))
+    |[] -> false;;
 
 exception FonctionNonExistante;;
 
 let rec foncAux (nomF,env) = function
-    ((((typeF : tp),fname,varL) : fundecl)::funbindL) -> (if fname = nomF
-                                     then (if (findVarFoncAux env varL)
-                                           then typeF
-                                           else raise MauvaisTypage)
-                                     else (foncAux (nomF,env) funbindL))
+    ((Fundecl (typeF,fname,varL))::funbindL) -> (if fname = nomF
+                                                 then (if (findVarFoncAux env varL)
+                                                       then typeF
+                                                       else raise MauvaisTypage)
+                                                 else (foncAux (nomF,env) funbindL))
     |[] -> raise FonctionNonExistante;;
 
 let rec tp_expr env = function
@@ -132,12 +218,14 @@ let rec tp_expr env = function
                                         in
                                             (BinOp(opBinAux(opBin,exp1tp,exp2tp),opBin,exp1tp,exp2tp))
 
-    |(IfThenElse (_,exp1,exp2,exp3)) -> let exp1tp = (tp_expr env exp1)
-                                        in let exp2tp = (tp_expr env exp2)
-                                            in let exp3tp = (tp_expr env exp3)
-                                                in
-                                                    IfThenElse((ifAux(exp1tp,exp2tp,exp3tp)),exp1tp,exp2tp,exp3tp)
-    |(CallE (_,nomF,declVar)) -> CallE ((foncAux (nomF,env) env.funbind),nomF,declVar);;
+    |(IfThenElse (_,exp1,exp2,exp3)) -> (try (let exp1tp = (tp_expr env exp1)
+                                        and exp2tp = (tp_expr env exp2)
+                                        and exp3tp = (tp_expr env exp3)
+                                        in
+                                            IfThenElse((ifAux(exp1tp,exp2tp,exp3tp)),exp1tp,exp2tp,exp3tp)) with
+                                                                                                            MauvaisTypage -> raise MauvaisTypage)
+
+    |(CallE (_,nomF,declVar)) -> CallE ((foncAux (nomF,env) (env.funbind)),nomF,declVar);;
 
 let env = {localvar = [("k", IntT);
                        ("n", IntT)];
@@ -160,4 +248,4 @@ let expr4 = VarE (0, Var(Local,"k"));;
 let expr5 = IfThenElse (0,expr3,expr2,expr4);;
 
 tp_expr env (expr5);;
-tp_of_expr (tp_expr env expr5);;
+tp_of_expr (tp_expr env (expr5));;
