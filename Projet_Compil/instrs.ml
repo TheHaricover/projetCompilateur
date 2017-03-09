@@ -1,5 +1,5 @@
 (* Datatypes for Bytecode instructions, methods, programs *)
-(* Numbers refer to the Sun JVM doc, 
+(* Numbers refer to the Sun JVM doc,
    http://java.sun.com/docs/books/vmspec/2nd-edition/html/VMSpecTOC.doc.html
  *)
 
@@ -7,7 +7,7 @@ open Lang
 
 type label = int list
 
-type instr = 
+type instr =
     Nop                         (* do nothing *)
   | Loadv of tp * int   	(* 3.11.2 -- load variable *)
   | Storev of tp * int  	(* store variable *)
@@ -36,4 +36,3 @@ type methinfo = Methinfo of int * int
 type methdefn = Methdefn of methdecl * methinfo * (instr list)
 
 type jvm_prog = JVMProg of (vardecl list) * (methdefn list)
-

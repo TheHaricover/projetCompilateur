@@ -1,5 +1,3 @@
-Doit contenir une description succincte de votre travail.
-
 Premier problème rencontré : Dans la fonction "tp_expr" lors du filtrage de "BinOp", mon "if" testait le type des deux expressions utilisées lors de l'opération binaire mais aussi le type d'une des deux opérations avec le type "IntT" ou "BoolT". Cette deuxième partie de la condition de mon "if" obligeait les expressions entrées dans la fonction "tp_expr" a être de la forme :
 					"BinOp of Lang.tp * binop * ('a expr) * ('a expr)" au lieu de
 					"BinOp of   'a    * binop * ('a expr) * ('a expr)".
@@ -12,5 +10,6 @@ Les fonctions auxillaires n'ont pas résistées à la mise en place du filtre de
 
 Finalement, depuis "CallE", voidify ne marche plus. Je vais donc chercher une autre solution.
 
+Un collègue, très charmant, m'a aidé pour "CallE" puisque j'avais une erreur qui m'interdisait d'entrer les expressions non typées (avec des "0" à la place des types) dans tp_expr. Grâce à sa magie vaudou, probablement, et grâce à mon cerveau, lui et moi nous avont mis à mal le problème et trouvé une solution. La solution ultime, réalisée par les mains de mon collègue qui est un professionnel du CAML.
 
 Second problème : Dans la fonction "tp_expr" lors du filtrage de "BinOp" ou de "IfThenElse", j'utilisais "tp_of_expr" du fichiers "lang.ml" implémenté via la commande "open". Seulement, cette commande semble ne pas fonctionner correctement sur mon ordinateur, j'ai alors été obligé d'utiliser "#use "lang.ml;;" au lieu de "open Lang". Il semblerai que le make n'accepte pas "#use "lang.ml;;". Donc j'ai copié-collé les fonctions dont je me sers et qui vienne de "lang.ml" dans "typing.ml".

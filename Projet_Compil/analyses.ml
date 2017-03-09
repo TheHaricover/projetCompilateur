@@ -10,7 +10,7 @@ open Lang
 (* ****  Statement returns                                 **** *)
 (* ************************************************************ *)
 
-let rec stmt_returns = false;;
+let rec stmt_returns = false
 
 
 
@@ -20,9 +20,9 @@ let rec stmt_returns = false;;
 
 
 
-let rec stack_depth_e = 0;;
+let rec stack_depth_e = 0
 
-let rec stack_depth_c = 0;;
+let rec stack_depth_c = 0
 
 
 
@@ -30,12 +30,13 @@ let rec stack_depth_c = 0;;
 (* ****  Definite Assignment                               **** *)
 (* ************************************************************ *)
 
-module StringSet =
+module StringSet = 
   Set.Make
-    (struct type t = string
-	    let compare = Pervasives.compare
-     end);;
+    (struct type t = string 
+	    let compare = Pervasives.compare 
+     end)
 
-let rec defassign_e a = true;;
+let rec defassign_e a = true
 
-let rec defassign_c allvs a = a;;
+let rec defassign_c allvs a = a
+
