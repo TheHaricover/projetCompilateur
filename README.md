@@ -12,7 +12,7 @@ The auxiliary functions didn't resist to the establishment of the "CallE" filter
 
 Finally, since "CallE", "voidify" don't work. I'm going to seek for another solution.
 
-A very charming colleague helped me for "CallE", because I had an error which forbade me to enter non-typed expressions (with "0" instead of "tp") in "tp_expr". Thznks to his voodoo magic, probably, and thanks to my brain, him and I took down this problem and found a solution. The ultimate solution, realised by my colleague's hands who's a CAML professional.
+A very charming colleague helped me for "CallE", because I had an error which forbade me to enter non-typed expressions (with "0" instead of "tp") in "tp_expr". Thanks to his voodoo magic, probably, and thanks to my brain, him and I took down this problem and found a solution. The ultimate solution, realised by my colleague's hands who's a CAML professional.
 
 Second problem : In the "tp_expr" function, on the filter of "BinOp" and "IfThenElse", I used "tp_of_expr" from the "lang.ml" file implemented through the command "open Lang". However, this command seems to not correctly work on my computer, so I was in the obligation to use "#use "lang.ml;;" instead of "open Lang".
 
