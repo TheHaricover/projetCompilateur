@@ -46,11 +46,15 @@ let env = {localvar = [("k", IntT);
                        ("n", IntT)];
            globalvar = [];
            returntp = VoidT;
-           funbind = [Fundecl(IntT,"f",[Vardecl (IntT,"y");Vardecl (BoolT,"jacques")])]};;
+           funbind = []};;
 
 
-let expr3 = BinOp (0, BCompar BCeq, VarE (0, Var (Local, "n")),
+let expr3 = BinOp (0, BArith BAadd, VarE (0, Var (Local, "n")),
                       BinOp (0, BArith BAadd, VarE (0, Var (Local, "k")),
                                              Const (0, IntV 1)));;
 
-genExpr ([(VarE (IntT, (Var (Local, "n"))));(VarE (IntT, (Var (Local, "k"))))]) (tp_expr env expr3);;
+let gen_prog (Prog (gvds, fdfs)) =
+JVMProg ([],
+        [Methdefn (Methdecl (IntT, "even", [IntT;IntT]),
+                   Methinfo (5,5),
+                   (genExpr ([(VarE (IntT, (Var (Local, "n"))));(VarE (IntT, (Var (Local, "k"))))]) (tp_expr env expr3)@[ReturnI IntT]))]);;
