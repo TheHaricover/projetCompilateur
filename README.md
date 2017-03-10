@@ -1,12 +1,19 @@
 # projetCompilateur
 
-Premier problème rencontré : Dans la fonction "tp_expr" lors du filtrage de "BinOp", mon "if" testait le type des deux expressions utilisées lors de l'opération binaire mais aussi le type d'une des deux opérations avec le type "IntT" ou "BoolT". Cette deuxième partie de la condition de mon "if" obligeait les expressions entrées dans la fonction "tp_expr" a être de la forme :
-					"BinOp of Lang.tp * binop * ('a expr) * ('a expr)" au lieu de
-					"BinOp of   'a    * binop * ('a expr) * ('a expr)".
+First encountered problem : In the "tp_expr" function, on the filter of "BinOp", my "if" was testing the type of the two used expressions by the binary operation but also the type of one of the two expressions with a "tp" type (like "IntT" or "BoolT"). This second part of my "if"'s condition was obliging the entered expressions in the "tp_expr" function to be of the form :
+		"BinOp of Lang.tp * binop * ('a expr) * ('a expr)" instead of
+		"BinOp of   'a    * binop * ('a expr) * ('a expr)".
 
-Pour régler ce problème j'ai créé la fonction "voidify" qui transforme les "0" (ou tout autre chose qu'il pourrait y avoir d'écrit) habituellement écrit en "VoidT", le type le plus neutre que j'ai trouvé. Peut être faudrait-il que je mette un type strictement neutre dans le type "tp".
-Cette idée n'étant pas une excellente idée, et ayant obtenu de l'aide pour ce problème, j'ai opté pour une autre solution : créer des fonctions auxilliaires.
+To adjust this problem, I first created the "voidify" function, which transform "0" (or whatever it's write) in "VoidT", the most neutral type I found.
 
+This idea wasn't good enough and from the help of some other people, I opted for another solution : create auxiliary functions.
 
+The auxiliary functions didn't resist to the establishment of the "CallE" filter. Without any obvious reason. Because I couldn't find the reason I saw myself in the obligation of recode "voidify".
 
-Second problème : Dans la fonction "tp_expr" lors du filtrage de "BinOp" ou de "IfThenElse", j'utilisais "tp_of_expr" du fichiers "lang.ml" implémenté via la commande "open". Seulement, cette commande semble ne pas fonctionner correctement sur mon ordinateur, j'ai alors été obligé d'utiliser "#use "lang.ml;;" au lieu de "open Lang". Il semblerai que le make n'accepte pas "#use "lang.ml;;". Donc j'ai copié-collé les fonctions dont je me sers et qui vienne de "lang.ml" dans "typing.ml".
+Finally, since "CallE", "voidify" don't work. I'm going to seek for another solution.
+
+A very charming colleague helped me for "CallE", because I had an error which forbade me to enter non-typed expressions (with "0" instead of "tp") in "tp_expr". Thznks to his voodoo magic, probably, and thanks to my brain, him and I took down this problem and found a solution. The ultimate solution, realised by my colleague's hands who's a CAML professional.
+
+Second problem : In the "tp_expr" function, on the filter of "BinOp" and "IfThenElse", I used "tp_of_expr" from the "lang.ml" file implemented through the command "open Lang". However, this command seems to not correctly work on my computer, so I was in the obligation to use "#use "lang.ml;;" instead of "open Lang".
+
+It seems that "make" don't accept "#use "lang.ml;;". So I copy-pasted the functions which I use and which comes from "lang.ml" in "typing.ml".
