@@ -54,7 +54,7 @@ let expr3 = BinOp (0, BArith BAadd, VarE (0, Var (Local, "n")),
                                              Const (0, IntV 1)));;
 
 let gen_prog (Prog (gvds, fdfs)) =
-JVMProg ([],
-        [Methdefn (Methdecl (IntT, "even", [IntT;IntT]),
-                   Methinfo (5,5),
-                   (genExpr ([(VarE (IntT, (Var (Local, "n"))));(VarE (IntT, (Var (Local, "k"))))]) (tp_expr env expr3)@[ReturnI IntT]))]);;
+	JVMProg ([],
+			 [Methdefn (Methdecl (IntT, "even", [IntT;IntT]),
+			  Methinfo (5,5),
+			  (genExpr ([(VarE (IntT, (Var (Local, "n"))));(VarE (IntT, (Var (Local, "k"))))]) (tp_expr env expr3)@[ReturnI IntT]))]);;

@@ -1,7 +1,7 @@
 all: comp
 
 # Compilation of Ocaml files
-# Attention: order of object files important 
+# Attention: order of object files important
 comp: lang.cmo parser.cmo lexer.cmo analyses.cmo typing.cmo\
       instrs.cmo gen.cmo print_instr.cmo interf.cmo comp.cmo
 	ocamlc -o comp $^
@@ -25,7 +25,7 @@ interf.cmo: interf.ml lexer.cmo print_instr.cmo gen.cmo typing.cmo
 gen.cmo: gen.ml lang.cmo analyses.cmo instrs.cmo
 	ocamlc -c $<
 
-print_instr.cmo: print_instr.ml lang.cmo instrs.cmo 
+print_instr.cmo: print_instr.ml lang.cmo instrs.cmo
 	ocamlc -c $<
 
 comp.cmo: comp.ml print_instr.cmo gen.cmo typing.cmo parser.cmo interf.cmo
@@ -53,5 +53,12 @@ parser.cmo: parser.ml parser.cmi lang.cmo
 
 .PHONY: clean
 
-clean: 
+clean:
 	rm -f lexer.ml parser.ml *.mli *.cmi *.cmo
+
+.PHONY: test
+
+test:
+	#unit tests
+	#For all the evaluations put the '<' between both words
+	ocaml tests.ml

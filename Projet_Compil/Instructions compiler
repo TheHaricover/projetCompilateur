@@ -1,0 +1,16 @@
+1. Faites un dernier "make" pour être sûr que tout le code est compilé. Ceci devrait produire un fichier
+exécutable "comp".
+
+2. Descendez dans le répertoire "Tests". La séquence typique est :
+  (a) Compilation (utilisant votre compilateur) du fichier even.c, avec
+  "../comp even.c Even.j"
+
+  (b) Traduction du fichier Even.j que votre compilateur vient de produire :
+  "java -jar jasmin.jar Even.j"
+  Ceci produit MyClass.class
+
+  (c) Faites éventuellement des adaptations dans le fichier "Wrapper.java" ; ensuite, compilation avec
+  "javac Wrapper.java". Vous pouvez omettre cette étape si "Wrapper.java" n’est pas modifié.
+
+  (d) Exécution, par exemple avec "java Wrapper 42" (nombre d’arguments en fonction de ce qui est
+  attendu par votre Wrapper).

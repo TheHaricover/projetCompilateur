@@ -1092,7 +1092,8 @@ let
       raise Lexerror )
 # 1094 "lexer.ml"
 
-  | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; __ocaml_lex_token_rec lexbuf __ocaml_lex_state
+  | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; 
+      __ocaml_lex_token_rec lexbuf __ocaml_lex_state
 
 and ruleTail acc lexbuf =
     __ocaml_lex_ruleTail_rec acc lexbuf 77
@@ -1101,19 +1102,20 @@ and __ocaml_lex_ruleTail_rec acc lexbuf __ocaml_lex_state =
       | 0 ->
 # 77 "lexer.mll"
       ( acc )
-# 1105 "lexer.ml"
+# 1106 "lexer.ml"
 
   | 1 ->
 let
 # 78 "lexer.mll"
         str
-# 1111 "lexer.ml"
+# 1112 "lexer.ml"
 = Lexing.sub_lexeme lexbuf lexbuf.Lexing.lex_start_pos lexbuf.Lexing.lex_curr_pos in
 # 78 "lexer.mll"
             ( ruleTail (acc ^ str) lexbuf )
-# 1115 "lexer.ml"
+# 1116 "lexer.ml"
 
-  | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; __ocaml_lex_ruleTail_rec acc lexbuf __ocaml_lex_state
+  | __ocaml_lex_state -> lexbuf.Lexing.refill_buff lexbuf; 
+      __ocaml_lex_ruleTail_rec acc lexbuf __ocaml_lex_state
 
 ;;
 
