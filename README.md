@@ -1,19 +1,61 @@
 # projetCompilateur
 
-First encountered problem : In the "tp_expr" function, on the filter of "BinOp", my "if" was testing the type of the two used expressions by the binary operation but also the type of one of the two expressions with a "tp" type (like "IntT" or "BoolT"). This second part of my "if"'s condition was obliging the entered expressions in the "tp_expr" function to be of the form :
+First encountered problem : In the "tp_expr" function, on the filter of
+"BinOp", my "if" was testing the type of the two used expressions by the
+binary operation but also the type of one of the two expressions with a
+"tp" type (like "IntT" or "BoolT"). This second part of my "if"'s
+condition was obliging the entered expressions in the "tp_expr" function
+to be of the form :
 		"BinOp of Lang.tp * binop * ('a expr) * ('a expr)" instead of
 		"BinOp of   'a    * binop * ('a expr) * ('a expr)".
 
-To adjust this problem, I first created the "voidify" function, which transform "0" (or whatever it's write) in "VoidT", the most neutral type I found.
+To adjust this problem, I first created the "voidify" function, which
+transform "0" (or whatever it's write) in "VoidT", the most neutral type
+I found.
 
-This idea wasn't good enough and from the help of some other people, I opted for another solution : create auxiliary functions.
+This idea wasn't good enough and from the help of some other people, I
+opted for another solution : create auxiliary functions.
 
-The auxiliary functions didn't resist to the establishment of the "CallE" filter. Without any obvious reason. Because I couldn't find the reason I saw myself in the obligation of recode "voidify".
+The auxiliary functions didn't resist to the establishment of the "CallE"
+filter. Without any obvious reason. Because I couldn't find the reason I
+saw myself in the obligation of recode "voidify".
 
-Finally, since "CallE", "voidify" don't work. I'm going to seek for another solution.
+Finally, since "CallE", "voidify" don't work. I'm going to seek for
+another solution.
 
-A very charming colleague helped me for "CallE", because I had an error which forbade me to enter non-typed expressions (with "0" instead of "tp") in "tp_expr". Thanks to his voodoo magic, probably, and thanks to my brain, him and I took down this problem and found a solution. The ultimate solution, realised by my colleague's hands who's a CAML professional.
+A very charming colleague helped me for "CallE", because I had an error
+which forbade me to enter non-typed expressions (with "0" instead of "tp")
+in "tp_expr". Thanks to his voodoo magic, probably, and thanks to my brain,
+him and I took down this problem and found a solution. The ultimate
+solution, realised by my colleague's hands who's a CAML professional.
 
-Second problem : In the "tp_expr" function, on the filter of "BinOp" and "IfThenElse", I used "tp_of_expr" from the "lang.ml" file implemented through the command "open Lang". However, this command seems to not correctly work on my computer, so I was in the obligation to use "#use "lang.ml;;" instead of "open Lang".
+Second problem : In the "tp_expr" function, on the filter of "BinOp" and
+"IfThenElse", I used "tp_of_expr" from the "lang.ml" file implemented
+through the command "open Lang". However, this command seems to not
+correctly work on my computer, so I was in the obligation to use "#use
+"lang.ml;;" instead of "open Lang".
 
-It seems that "make" don't accept "#use "lang.ml;;". So I copy-pasted the functions which I use and which comes from "lang.ml" in "typing.ml".
+It seems that "make" don't accept "#use "lang.ml;;". So I copy-pasted the
+functions which I use and which comes from "lang.ml" in "typing.ml".
+
+I added 'typing.cmo' on the compilation of 'gen.ml' in the makefile to
+make the
+'open Typing' work. It doesn't, but hey, I'll let it here.
+
+My compiler doesn't work. Here's my command :
+"ocamlrun ../comp even.c even.j" and here's the error :
+"Fatal error: exception Typing.BadTypingVariableDoesntExists".
+It means that the function tp_expr (more precisely findTypeOfVar) didn't
+found a variable. I didn't look for why is this error popping as I don't
+understand all the subtleties of a compiler and this make me give up. I
+also did the compiler too late.
+
+If you have a problem with the make, maybe you should erase the three
+first lines.
+
+All the functions that weren't coded by you were coded by me. The helpers
+helped me understand things or code in a better way.
+
+The helpers : Lorris "zorglum" MAZERAN, Romain "Derventt" AGEZ,
+Marvyn "Scalaire" O'ROURKE, Maxime "Mamamillaaa" MORENO,
+Kévin "==>" MOGINET.
