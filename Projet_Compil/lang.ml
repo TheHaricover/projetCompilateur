@@ -30,14 +30,15 @@ type value =
 
 type var = Var of binding * vname;;
 
-(* expresssions.
+(* expressions.
    The type parameter 'a is instantiated during type inference *)
 type 'a expr =
     Const of 'a * value                        (* constant *)
   | VarE of 'a * var                (* variable *)
   | BinOp of 'a * binop * ('a expr) * ('a expr)   (* binary operation *)
   | IfThenElse of 'a * ('a expr) * ('a expr) * ('a expr) (* if - then - else *)
-  | CallE of 'a * fname * ('a expr list);;
+  | CallE of 'a * fname * ('a expr list (* List of constants used
+as values for parameters *));;
 
 (* auxiliary function; extracts the type component of an expression *)
 let tp_of_expr = function
@@ -55,7 +56,8 @@ type 'a stmt =
   | Seq of ('a stmt) * ('a stmt)
   | Cond of ('a expr) * ('a stmt) * ('a stmt)
   | While of ('a expr) * ('a stmt)
-  | CallC of fname * ('a expr list)
+  | CallC of fname * ('a expr list (* List of constants used
+as values for parameters *))
   | Return of ('a expr);;
 
 

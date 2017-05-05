@@ -1,3 +1,7 @@
+ifeq ($(OS),Windows_NT)
+	SHELL=C:/Windows/System32/cmd.exe
+endif
+
 all: comp
 
 # Compilation of Ocaml files
@@ -22,7 +26,7 @@ instrs.cmo:  instrs.ml lang.cmo
 interf.cmo: interf.ml lexer.cmo print_instr.cmo gen.cmo typing.cmo
 	ocamlc -c $<
 
-gen.cmo: gen.ml lang.cmo analyses.cmo instrs.cmo
+gen.cmo: gen.ml lang.cmo analyses.cmo instrs.cmo typing.cmo
 	ocamlc -c $<
 
 print_instr.cmo: print_instr.ml lang.cmo instrs.cmo
